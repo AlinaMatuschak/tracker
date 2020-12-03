@@ -1,8 +1,8 @@
-.nav {
-  display: flex;
-  margin: 20px;
+.tracker {
+  text-align: center;
 
-  * {
-    margin-right: 10px;
+  &__title {
+    margin-bottom: 30px;
+    font-size: 40px;
   }
 }
