@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import shortid from 'shortid';
 import './App.scss';
 import { Form } from './components/Form/Form';
 import { TrackerList } from './components/TrackerList/TrackerList';
@@ -6,9 +7,13 @@ import { TrackerList } from './components/TrackerList/TrackerList';
 export const App = () => {
   const [trackers, setTtackers] = useState([]);
 
-  const addTracker = (tracker) => {
+  const addTracker = (trackerName) => {
     setTtackers(currentTrackers => ([
-      tracker,
+      {
+        id: shortid.generate(),
+        name: trackerName,
+        time: '00:00:00',
+      },
       ...currentTrackers,
     ]));
   };
