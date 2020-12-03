@@ -1,8 +1,13 @@
 import React from 'react';
+import { Tracker } from '../Tracker';
 import './TrackerList.scss';
 
-export const TrackerList = () => (
+export const TrackerList = ({ trackers }) => (
   <ul>
-    <li>t</li>
+    {trackers.map(tracker => (
+      <li key={tracker.id}>
+        <Tracker tracker={tracker} />
+      </li>
+    ))}
   </ul>
 );
