@@ -9,20 +9,20 @@ export const Tracker = ({ tracker }) => {
   }, [setIsTrackerOn]);
 
   return (
-    <div>
-      <p>{tracker.name}</p>
-      <div>
-        <span>{tracker.time}</span>
+    <div className="tracker-item">
+      <p className="tracker-item__name">{tracker.name}</p>
+      <div className="tracker-item__time-controlers">
+        <span className="tracker-item__time">{tracker.time}</span>
 
         <button
           type="button"
+          className="tracker-item__button"
           onClick={trackerPlayToggel}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
-            height="24"
             viewBox="0 0 24 24"
-            width="24"
+            className="tracker-item__svg"
           >
             <path d="M0 0h24v24H0z" fill="none" />
             {isTrackerOn
@@ -33,17 +33,17 @@ export const Tracker = ({ tracker }) => {
 
         <button
           type="button"
+          className="tracker-item__button tracker-item__button--dangerous"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
             enableBackground="new 0 0 24 24"
-            height="24"
             viewBox="0 0 24 24"
-            width="24"
+            className="tracker-item__svg"
           >
             <g>
               <rect fill="none" fillRule="evenodd" height="24" width="24" />
-              <rect fillRule="evenodd" height="2" width="16" x="4" y="11" />
+              <rect fillRule="evenodd" height="3" width="16" x="4" y="11" />
             </g>
           </svg>
         </button>
