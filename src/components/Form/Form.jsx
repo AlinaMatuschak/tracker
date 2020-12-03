@@ -8,13 +8,20 @@ export const Form = ({ onSubmit }) => {
     setTrackerName(target.value);
   };
 
+  const handleSubmit = (event) => {
+    event.preventDefault();
+
+    trackerName.length
+      ? onSubmit(trackerName)
+      : onSubmit((new Date()).toLocaleDateString());
+
+    setTrackerName('');
+  };
+
   return (
     <form
       className="form"
-      onSubmit={(event) => {
-        event.preventDefault();
-        onSubmit(trackerName);
-      }}
+      onSubmit={handleSubmit}
     >
       <input
         type="text"
