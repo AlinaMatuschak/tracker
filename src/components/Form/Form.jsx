@@ -1,14 +1,14 @@
-import React, { useState } from 'react';
+import React, { useCallback, useState } from 'react';
 import './Form.scss';
 
-export const Form = ({ onSubmit }) => {
+export const Form = React.memo(({ onSubmit }) => {
   const [trackerName, setTrackerName] = useState('');
 
-  const changeTrackerName = ({ target }) => {
+  const changeTrackerName = useCallback(({ target }) => {
     setTrackerName(target.value);
-  };
+  }, [setTrackerName]);
 
-  const handleSubmit = (event) => {
+  const handleSubmit = useCallback((event) => {
     event.preventDefault();
 
     trackerName.length
@@ -16,7 +16,7 @@ export const Form = ({ onSubmit }) => {
       : onSubmit((new Date()).toLocaleDateString());
 
     setTrackerName('');
-  };
+  }, [trackerName, onSubmit]);
 
   return (
     <form
@@ -45,4 +45,4 @@ export const Form = ({ onSubmit }) => {
       </button>
     </form>
   );
-};
+});

@@ -1,18 +1,64 @@
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import './Tracker.scss';
 
-export const Tracker = ({ tracker }) => {
+export const Tracker = React.memo(({
+  tracker,
+  updateTracker,
+  deleteTracker,
+}) => {
   const [isTrackerOn, setIsTrackerOn] = useState(true);
 
   const trackerPlayToggel = useCallback(() => {
     setIsTrackerOn(curIsTrackerOn => !curIsTrackerOn);
   }, [setIsTrackerOn]);
 
+  useEffect(() => {
+    const timex = setTimeout(() => startTimer(), 1000);
+
+    if (!isTrackerOn) {
+      clearInterval(timex);
+    }
+  }, [tracker, isTrackerOn]);
+
+  const startTimer = useCallback(() => {
+    let {
+      hours,
+      mins,
+      seconds,
+    } = tracker.time;
+
+    seconds = +seconds + 1;
+    mins = +mins;
+    hours = +hours;
+
+    if (seconds > 59) {
+      seconds = 0;
+      mins += 1;
+    }
+
+    if (mins > 59) {
+      mins = 0;
+      hours += 1;
+    }
+
+    seconds = seconds < 10 ? `0${seconds}` : seconds.toString();
+    mins = mins < 10 ? `0${mins}` : mins.toString();
+    hours = hours < 10 ? `0${hours}` : hours.toString();
+
+    updateTracker(tracker.id, {
+      hours,
+      mins,
+      seconds,
+    });
+  }, [tracker, setTimeout, updateTracker]);
+
   return (
     <div className="tracker-item">
       <p className="tracker-item__name">{tracker.name}</p>
       <div className="tracker-item__time-controlers">
-        <span className="tracker-item__time">{tracker.time}</span>
+        <span className="tracker-item__time">
+          {Object.values(tracker.time).join(':')}
+        </span>
 
         <button
           type="button"
@@ -27,13 +73,17 @@ export const Tracker = ({ tracker }) => {
             <path d="M0 0h24v24H0z" fill="none" />
             {isTrackerOn
               ? <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
-              : <path d="M8 5v14l11-7z" />}
+              : <path d="M8 5v14l11-7z" />
+            }
           </svg>
         </button>
 
         <button
           type="button"
           className="tracker-item__button tracker-item__button--dangerous"
+          onClick={useCallback(() => {
+            deleteTracker(tracker.id);
+          }, [deleteTracker, tracker])}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -50,4 +100,4 @@ export const Tracker = ({ tracker }) => {
       </div>
     </div>
   );
-};
+});
