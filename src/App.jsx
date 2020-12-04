@@ -51,16 +51,18 @@ export const App = React.memo(() => {
           mins: '00',
           seconds: '00',
         },
+        isTimerOn: true,
       },
       ...currentTrackers,
     ]));
   }, [setTackers, shortid]);
 
-  const updateTracker = useCallback((trackerId, trackerTime) => {
+  const updateTracker = useCallback((trackerId, renewal) => {
     setTackers(currentTrackers => currentTrackers
       .map(tracker => (tracker.id === trackerId
         ? {
-          ...tracker, time: trackerTime,
+          ...tracker,
+          ...renewal,
         }
         : tracker)),
     [setTackers, localStorage]);

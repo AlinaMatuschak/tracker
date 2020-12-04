@@ -4,6 +4,10 @@
   align-items: center;
   padding: 18px 0;
 
+  &--active {
+    color: #3faf6c;
+  }
+
   &__name {
     margin: 0 20px;
   }

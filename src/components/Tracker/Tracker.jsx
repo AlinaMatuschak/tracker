@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import './Tracker.scss';
 
 export const Tracker = React.memo(({
@@ -6,19 +6,17 @@ export const Tracker = React.memo(({
   updateTracker,
   deleteTracker,
 }) => {
-  const [isTrackerOn, setIsTrackerOn] = useState(true);
-
   const trackerPlayToggel = useCallback(() => {
-    setIsTrackerOn(curIsTrackerOn => !curIsTrackerOn);
-  }, [setIsTrackerOn]);
+    updateTracker(tracker.id, { isTimerOn: !tracker.isTimerOn });
+  }, [updateTracker]);
 
   useEffect(() => {
     const timex = setTimeout(() => startTimer(), 1000);
 
-    if (!isTrackerOn) {
+    if (!tracker.isTimerOn) {
       clearInterval(timex);
     }
-  }, [tracker, isTrackerOn]);
+  }, [tracker, tracker.isTimerOn]);
 
   const startTimer = useCallback(() => {
     let {
@@ -46,14 +44,21 @@ export const Tracker = React.memo(({
     hours = hours < 10 ? `0${hours}` : hours.toString();
 
     updateTracker(tracker.id, {
-      hours,
-      mins,
-      seconds,
+      time: {
+        hours,
+        mins,
+        seconds,
+      },
     });
   }, [tracker, setTimeout, updateTracker]);
 
   return (
-    <div className="tracker-item">
+    <div className={
+      tracker.isTimerOn
+        ? 'tracker-item tracker-item--active'
+        : 'tracker-item'
+    }
+    >
       <p className="tracker-item__name">{tracker.name}</p>
       <div className="tracker-item__time-controlers">
         <span className="tracker-item__time">
@@ -71,7 +76,7 @@ export const Tracker = React.memo(({
             className="tracker-item__svg"
           >
             <path d="M0 0h24v24H0z" fill="none" />
-            {isTrackerOn
+            {tracker.isTimerOn
               ? <path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z" />
               : <path d="M8 5v14l11-7z" />
             }
