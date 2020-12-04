@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
+import classNames from 'classnames';
 import './Tracker.scss';
 
 export const Tracker = React.memo(({
@@ -53,11 +54,9 @@ export const Tracker = React.memo(({
   }, [tracker, setTimeout, updateTracker]);
 
   return (
-    <div className={
-      tracker.isTimerOn
-        ? 'tracker-item tracker-item--active'
-        : 'tracker-item'
-    }
+    <div className={classNames('tracker-item', {
+      'tracker-item--active': tracker.isTimerOn,
+    })}
     >
       <p className="tracker-item__name">{tracker.name}</p>
       <div className="tracker-item__time-controlers">
