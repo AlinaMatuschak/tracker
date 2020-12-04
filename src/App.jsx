@@ -11,34 +11,27 @@ export const App = React.memo(() => {
 
   useEffect(() => {
     const trackersFromLocalStorage = localStorage.getItem('trackers');
-    const secondsFromLocalStorage = localStorage.getItem('seconds');
 
-    if (trackersFromLocalStorage && secondsFromLocalStorage) {
+    if (trackersFromLocalStorage) {
       const parsedTrackers = JSON.parse(trackersFromLocalStorage);
-      const differenceSeconds = getSeconds() - +secondsFromLocalStorage;
 
-      const updatedTrackers = parsedTrackers.map((tracker) => {
-        const { hours, mins, seconds } = tracker.time;
-        const timeInSeconds = (hours * 3600) + (mins * 60) + +seconds;
-
-        return {
+      const updatedTrackers = parsedTrackers.map(tracker => (tracker.isTimerOn
+        ? ({
           ...tracker,
-          time: parseTime(timeInSeconds + differenceSeconds),
-        };
-      });
+          time: parseTime(getSeconds() - tracker.dataSeconds),
+        })
+        : tracker));
 
       setTackers(updatedTrackers);
     }
 
     // return () => {
     //   localStorage.setItem('trackers', JSON.stringify(trackers));
-    //   localStorage.setItem('seconds', getSeconds());
     // };
   }, []);
 
   useEffect(() => {
     localStorage.setItem('trackers', JSON.stringify(trackers));
-    localStorage.setItem('seconds', getSeconds());
   }, [trackers]);
 
   const addTracker = useCallback((trackerName) => {
@@ -51,11 +44,13 @@ export const App = React.memo(() => {
           mins: '00',
           seconds: '00',
         },
+        dataSeconds: getSeconds(),
+        timeOutStart: null,
         isTimerOn: true,
       },
       ...currentTrackers,
     ]));
-  }, [setTackers, shortid]);
+  }, [setTackers, shortid, getSeconds]);
 
   const updateTracker = useCallback((trackerId, renewal) => {
     setTackers(currentTrackers => currentTrackers
@@ -65,7 +60,7 @@ export const App = React.memo(() => {
           ...renewal,
         }
         : tracker)),
-    [setTackers, localStorage]);
+    [setTackers]);
   });
 
   const deleteTracker = useCallback((trackerId) => {
@@ -76,12 +71,15 @@ export const App = React.memo(() => {
   return (
     <section className="tracker">
       <h1 className="tracker__title">tracker</h1>
-      <Form onSubmit={addTracker} />
-      <TrackerList
-        trackers={trackers}
-        updateTracker={updateTracker}
-        deleteTracker={deleteTracker}
-      />
+      <div className="tracker__content">
+        <Form onSubmit={addTracker} />
+
+        <TrackerList
+          trackers={trackers}
+          updateTracker={updateTracker}
+          deleteTracker={deleteTracker}
+        />
+      </div>
     </section>
   );
 });

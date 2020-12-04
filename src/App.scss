@@ -5,4 +5,11 @@
     margin-bottom: 30px;
     font-size: 40px;
   }
+
+  @media (min-width: 560px) {
+    &__content {
+      margin: auto;
+      width: 560px;
+    }
+  }
 }

@@ -1,6 +1,8 @@
 import React, { useCallback, useEffect } from 'react';
 import classNames from 'classnames';
-import './Tracker.scss';
+import './Tracker-item.scss';
+import { getSeconds } from '../../helpers/getSeconds';
+import { parseTime } from '../../helpers/parseTime';
 
 export const Tracker = React.memo(({
   tracker,
@@ -8,8 +10,26 @@ export const Tracker = React.memo(({
   deleteTracker,
 }) => {
   const trackerPlayToggel = useCallback(() => {
-    updateTracker(tracker.id, { isTimerOn: !tracker.isTimerOn });
-  }, [updateTracker]);
+    if (tracker.isTimerOn) {
+      updateTracker(tracker.id, {
+        isTimerOn: !tracker.isTimerOn, timeOutStart: getSeconds(),
+      });
+    } else {
+      const timeOut = getSeconds() - tracker.timeOutStart;
+
+      updateTracker(tracker.id, {
+        isTimerOn: !tracker.isTimerOn,
+        dataSeconds: tracker.dataSeconds + timeOut,
+        timeOutStart: null,
+      });
+    }
+  }, [updateTracker, tracker, getSeconds]);
+
+  const startTimer = useCallback(() => {
+    updateTracker(tracker.id, {
+      time: parseTime(getSeconds() - tracker.dataSeconds),
+    });
+  }, [tracker, updateTracker, parseTime, getSeconds]);
 
   useEffect(() => {
     const timex = setTimeout(() => startTimer(), 1000);
@@ -17,41 +37,7 @@ export const Tracker = React.memo(({
     if (!tracker.isTimerOn) {
       clearInterval(timex);
     }
-  }, [tracker, tracker.isTimerOn]);
-
-  const startTimer = useCallback(() => {
-    let {
-      hours,
-      mins,
-      seconds,
-    } = tracker.time;
-
-    seconds = +seconds + 1;
-    mins = +mins;
-    hours = +hours;
-
-    if (seconds > 59) {
-      seconds = 0;
-      mins += 1;
-    }
-
-    if (mins > 59) {
-      mins = 0;
-      hours += 1;
-    }
-
-    seconds = seconds < 10 ? `0${seconds}` : seconds.toString();
-    mins = mins < 10 ? `0${mins}` : mins.toString();
-    hours = hours < 10 ? `0${hours}` : hours.toString();
-
-    updateTracker(tracker.id, {
-      time: {
-        hours,
-        mins,
-        seconds,
-      },
-    });
-  }, [tracker, setTimeout, updateTracker]);
+  }, [tracker.isTimerOn, setTimeout, clearInterval, startTimer]);
 
   return (
     <div className={classNames('tracker-item', {
