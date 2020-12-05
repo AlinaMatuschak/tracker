@@ -1,6 +1,7 @@
 # Tracker
 
 Time tracking app.
+Trackers are saved after closing the page.
 - [Demo](https://alinamatuschak.github.io/tracker/)
 
 ## Local deployment
