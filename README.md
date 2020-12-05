@@ -10,6 +10,7 @@ Time tracking app.
 * JS
 * Sass
 * BEM methodology
+* localStorage
 
 ### Installing
 * Fork and clone this repository
