@@ -1,11 +1,17 @@
-# React Starter Pack
+# Tracker
 
-To use this template click `Use this template`
+Time tracking app.
+- [Demo](https://alinamatuschak.github.io/tracker/)
 
-### Available Scripts
+## Local deployment
 
-`Deploy` - available to deploy your application to gh-pages
+### Technologies:
+* React
+* JS
+* Sass
+* BEM methodology
 
-`SCSS Preprocessor` - available to write your styles with modern style language
-
-`React router` - available to use dynamic routes to switch between pages
+### Installing
+* Fork and clone this repository
+* Run `npm install` in your terminal
+* Run `npm start`
