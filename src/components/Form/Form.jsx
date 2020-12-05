@@ -18,6 +18,14 @@ export const Form = React.memo(({ onSubmit }) => {
     setTrackerName('');
   }, [trackerName, onSubmit]);
 
+  const handleKeyDown = useCallback((event) => {
+    if (event.key !== 'Enter') {
+      return;
+    }
+
+    handleSubmit(event);
+  });
+
   return (
     <form
       className="form"
@@ -29,6 +37,7 @@ export const Form = React.memo(({ onSubmit }) => {
         placeholder="Enter tracker name"
         value={trackerName}
         onChange={changeTrackerName}
+        onKeyDown={handleKeyDown}
       />
       <button
         type="submit"

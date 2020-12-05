@@ -1,3 +1,6 @@
+@import '../../utils/vars';
+@import '../../utils/mixins';
+
 .form {
   position: relative;
 
@@ -7,6 +10,10 @@
     padding: 0 40px 0 20px;
     border-radius: 30px;
     border: 1px solid #7f7f7f;
+
+    &:focus {
+      box-shadow: 0 0 3px  $main-color;
+    }
   }
 
   &__button {
@@ -15,17 +22,23 @@
     top: 50%;
     width: 40px;
     height: 40px;
-    background-color: #3faf6c;
+    background-color: $main-color;
     border-radius: 50%;
     border-width: 0;
     transform: translateY(-50%);
     cursor: pointer;
+
+    @include hover(opacity, 0.8);
   }
 
   &__start-icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    width: 70%;
+    height: 70%;
     margin: auto;
-    width: 95%;
-    height: 95%;
     fill: white;
+    transform: translate(-50%, -50%);
   }
 }

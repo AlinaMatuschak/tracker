@@ -1,45 +1,35 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import shortid from 'shortid';
+import { useBeforeunload } from 'react-beforeunload';
+
 import './App.scss';
 import { Form } from './components/Form/Form';
-import { TrackerList } from './components/TrackerList/TrackerList';
+import { TrackerList } from './components/TrackerList';
 import { getSeconds } from './helpers/getSeconds';
 import { parseTime } from './helpers/parseTime';
+import { saveDataToLocalStorage } from './helpers/saveDataToLocalStorage';
 
 export const App = React.memo(() => {
   const [trackers, setTackers] = useState([]);
 
   useEffect(() => {
-    const trackersFromLocalStorage = localStorage.getItem('trackers');
-    const secondsFromLocalStorage = localStorage.getItem('seconds');
+    const trackersFromLocalStorage = localStorage.getItem('trackers') || [];
+    const parsedTrackers = JSON.parse(trackersFromLocalStorage);
 
-    if (trackersFromLocalStorage && secondsFromLocalStorage) {
-      const parsedTrackers = JSON.parse(trackersFromLocalStorage);
-      const differenceSeconds = getSeconds() - +secondsFromLocalStorage;
+    const updatedTrackers = parsedTrackers.map(tracker => (tracker.isTimerOn
+      ? ({
+        ...tracker,
+        time: parseTime(getSeconds() - tracker.dataSeconds),
+      })
+      : tracker));
 
-      const updatedTrackers = parsedTrackers.map((tracker) => {
-        const { hours, mins, seconds } = tracker.time;
-        const timeInSeconds = (hours * 3600) + (mins * 60) + +seconds;
-
-        return {
-          ...tracker,
-          time: parseTime(timeInSeconds + differenceSeconds),
-        };
-      });
-
-      setTackers(updatedTrackers);
-    }
-
-    // return () => {
-    //   localStorage.setItem('trackers', JSON.stringify(trackers));
-    //   localStorage.setItem('seconds', getSeconds());
-    // };
+    setTackers(updatedTrackers);
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem('trackers', JSON.stringify(trackers));
-    localStorage.setItem('seconds', getSeconds());
-  }, [trackers]);
+  useBeforeunload((event) => {
+    event.preventDefault();
+    saveDataToLocalStorage('trackers', trackers);
+  });
 
   const addTracker = useCallback((trackerName) => {
     setTackers(currentTrackers => ([
@@ -51,19 +41,23 @@ export const App = React.memo(() => {
           mins: '00',
           seconds: '00',
         },
+        dataSeconds: getSeconds(),
+        timeOutStart: null,
+        isTimerOn: true,
       },
       ...currentTrackers,
     ]));
-  }, [setTackers, shortid]);
+  }, [setTackers, shortid, getSeconds]);
 
-  const updateTracker = useCallback((trackerId, trackerTime) => {
+  const updateTracker = useCallback((trackerId, renewal) => {
     setTackers(currentTrackers => currentTrackers
       .map(tracker => (tracker.id === trackerId
         ? {
-          ...tracker, time: trackerTime,
+          ...tracker,
+          ...renewal,
         }
         : tracker)),
-    [setTackers, localStorage]);
+    [setTackers]);
   });
 
   const deleteTracker = useCallback((trackerId) => {
@@ -74,12 +68,15 @@ export const App = React.memo(() => {
   return (
     <section className="tracker">
       <h1 className="tracker__title">tracker</h1>
-      <Form onSubmit={addTracker} />
-      <TrackerList
-        trackers={trackers}
-        updateTracker={updateTracker}
-        deleteTracker={deleteTracker}
-      />
+      <div className="tracker__content">
+        <Form onSubmit={addTracker} />
+
+        <TrackerList
+          trackers={trackers}
+          updateTracker={updateTracker}
+          deleteTracker={deleteTracker}
+        />
+      </div>
     </section>
   );
 });

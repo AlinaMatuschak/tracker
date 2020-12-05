@@ -1,13 +1,14 @@
+@import '../../utils/vars';
+
 .list {
   list-style: none;
   padding: 0;
 
   &__item {
-    border-top: 1px solid #e5e5e5;
-    background-color: #fdfdf6;
+    border-top: $tracker-item-border;
 
     &:last-child {
-      border-bottom: 1px solid #e5e5e5;
+      border-bottom: $tracker-item-border;
     }
   }
 }

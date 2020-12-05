@@ -1,0 +1,6 @@
+@mixin hover($_property, $_toValue, $_duration: 0.3s) {
+  transition: #{$_property} #{$_duration} ease-out;
+  &:hover {
+    #{$_property}: $_toValue;
+  }
+}

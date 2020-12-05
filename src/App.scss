@@ -1,8 +1,17 @@
+@import './utils/vars';
+
 .tracker {
   text-align: center;
 
   &__title {
     margin-bottom: 30px;
     font-size: 40px;
+  }
+
+  @media (min-width: $main-width) {
+    &__content {
+      margin: auto;
+      width: $main-width;
+    }
   }
 }

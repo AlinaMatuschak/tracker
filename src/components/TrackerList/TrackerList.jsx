@@ -1,5 +1,5 @@
 import React from 'react';
-import { Tracker } from '../Tracker';
+import { Tracker } from '../Tracker-item';
 import './TrackerList.scss';
 
 export const TrackerList = React.memo(({
