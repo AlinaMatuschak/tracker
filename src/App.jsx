@@ -1,38 +1,35 @@
 import React, { useCallback, useEffect, useState } from 'react';
 import shortid from 'shortid';
+import { useBeforeunload } from 'react-beforeunload';
+
 import './App.scss';
 import { Form } from './components/Form/Form';
-import { TrackerList } from './components/TrackerList/TrackerList';
+import { TrackerList } from './components/TrackerList';
 import { getSeconds } from './helpers/getSeconds';
 import { parseTime } from './helpers/parseTime';
+import { saveDataToLocalStorage } from './helpers/saveDataToLocalStorage';
 
 export const App = React.memo(() => {
   const [trackers, setTackers] = useState([]);
 
   useEffect(() => {
-    const trackersFromLocalStorage = localStorage.getItem('trackers');
+    const trackersFromLocalStorage = localStorage.getItem('trackers') || [];
+    const parsedTrackers = JSON.parse(trackersFromLocalStorage);
 
-    if (trackersFromLocalStorage) {
-      const parsedTrackers = JSON.parse(trackersFromLocalStorage);
+    const updatedTrackers = parsedTrackers.map(tracker => (tracker.isTimerOn
+      ? ({
+        ...tracker,
+        time: parseTime(getSeconds() - tracker.dataSeconds),
+      })
+      : tracker));
 
-      const updatedTrackers = parsedTrackers.map(tracker => (tracker.isTimerOn
-        ? ({
-          ...tracker,
-          time: parseTime(getSeconds() - tracker.dataSeconds),
-        })
-        : tracker));
-
-      setTackers(updatedTrackers);
-    }
-
-    // return () => {
-    //   localStorage.setItem('trackers', JSON.stringify(trackers));
-    // };
+    setTackers(updatedTrackers);
   }, []);
 
-  useEffect(() => {
-    localStorage.setItem('trackers', JSON.stringify(trackers));
-  }, [trackers]);
+  useBeforeunload((event) => {
+    event.preventDefault();
+    saveDataToLocalStorage('trackers', trackers);
+  });
 
   const addTracker = useCallback((trackerName) => {
     setTackers(currentTrackers => ([

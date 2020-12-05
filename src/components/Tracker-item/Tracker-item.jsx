@@ -9,10 +9,27 @@ export const Tracker = React.memo(({
   updateTracker,
   deleteTracker,
 }) => {
+  const startTimer = useCallback(() => {
+    updateTracker(tracker.id, {
+      time: parseTime(getSeconds() - tracker.dataSeconds),
+    });
+  }, [tracker, updateTracker, parseTime, getSeconds]);
+
+  useEffect(() => {
+    const timex = setTimeout(() => {
+      startTimer();
+    }, 500);
+
+    if (!tracker.isTimerOn) {
+      clearInterval(timex);
+    }
+  }, [tracker.isTimerOn, setTimeout, clearInterval, startTimer]);
+
   const trackerPlayToggel = useCallback(() => {
     if (tracker.isTimerOn) {
       updateTracker(tracker.id, {
-        isTimerOn: !tracker.isTimerOn, timeOutStart: getSeconds(),
+        isTimerOn: !tracker.isTimerOn,
+        timeOutStart: getSeconds(),
       });
     } else {
       const timeOut = getSeconds() - tracker.timeOutStart;
@@ -25,19 +42,9 @@ export const Tracker = React.memo(({
     }
   }, [updateTracker, tracker, getSeconds]);
 
-  const startTimer = useCallback(() => {
-    updateTracker(tracker.id, {
-      time: parseTime(getSeconds() - tracker.dataSeconds),
-    });
-  }, [tracker, updateTracker, parseTime, getSeconds]);
-
-  useEffect(() => {
-    const timex = setTimeout(() => startTimer(), 1000);
-
-    if (!tracker.isTimerOn) {
-      clearInterval(timex);
-    }
-  }, [tracker.isTimerOn, setTimeout, clearInterval, startTimer]);
+  const handelDeleteTracker = useCallback(() => {
+    deleteTracker(tracker.id);
+  }, [deleteTracker, tracker]);
 
   return (
     <div className={classNames('tracker-item', {
@@ -71,9 +78,7 @@ export const Tracker = React.memo(({
         <button
           type="button"
           className="tracker-item__button tracker-item__button--dangerous"
-          onClick={useCallback(() => {
-            deleteTracker(tracker.id);
-          }, [deleteTracker, tracker])}
+          onClick={handelDeleteTracker}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
