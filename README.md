@@ -17,3 +17,6 @@ Trackers are saved after closing the page.
 * Fork and clone this repository
 * Run `npm install` in your terminal
 * Run `npm start`
+
+### Builded code
+* On [gh-pages](https://github.com/AlinaMatuschak/tracker/tree/gh-pages) branche
