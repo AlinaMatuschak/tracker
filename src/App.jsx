@@ -13,8 +13,12 @@ export const App = React.memo(() => {
   const [trackers, setTackers] = useState([]);
 
   useEffect(() => {
-    const trackersFromLocalStorage = localStorage.getItem('trackers') || [];
-    const parsedTrackers = JSON.parse(trackersFromLocalStorage);
+    const trackersFromLocalStorage = localStorage.getItem('trackers');
+    let parsedTrackers = [];
+
+    if (trackersFromLocalStorage) {
+      parsedTrackers = JSON.parse(trackersFromLocalStorage);
+    }
 
     const updatedTrackers = parsedTrackers.map(tracker => (tracker.isTimerOn
       ? ({
